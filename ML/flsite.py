@@ -14,7 +14,7 @@ menu = [{"name": "Лаба 1", "url": "p_knn"},
 
 loaded_model_knn = pickle.load(open('model/melon', 'rb'))
 loaded_model_Log = pickle.load(open('model2/melon', 'rb'))
-loaded_model_Tree = pickle.load(open('model3/melon', 'rb'))
+loaded_model_Tree = pickle.load(open('model3/tree', 'rb'))
 
 
 @app.route("/")
@@ -53,15 +53,15 @@ def get_sort():
                        float(request.args.get('sugar'))]])
     pred = loaded_model_knn.predict(X_new)
     print(pred[0])
-    if pred == "[0]":
+    if pred == 0:
        sort = "Kalhoznitsa"
     elif pred == 1:
         sort = "Torpeda"
-    elif pred == "[2]":
+    elif pred == 2:
         sort = "Pyatiminutka"
-    elif pred == "[3]":
+    elif pred == 3:
         sort = "Alyasks"
-    elif pred == "[4]":
+    elif pred == 4:
         sort = "Sangria"
     else:
         sort = 'defult'
@@ -75,9 +75,9 @@ def f_lab2():
         X_new = np.array([[int(request.form['list1']),
                            int(request.form['list2']),
                            int(request.form['list3'])]])
-        pred = loaded_model_Log.predict(X_new)
+        pred = str(loaded_model_Log.predict(X_new))
         if pred == "[0]":
-            sort = "Калхозница"
+            sort = "Колхозница"
         elif pred == "[1]":
             sort = "Торпеда"
         elif pred == "[2]":
@@ -94,26 +94,18 @@ def f_lab2():
 @app.route("/p_lab3", methods=['POST', 'GET'])
 def f_lab3():
     if request.method == 'GET':
-        return render_template('lab3.html', title="Логистическая регрессия", menu=menu)
+        return render_template('lab3.html',
+                               title="Бинарное дерево",
+                               menu=menu,
+                               )
     if request.method == 'POST':
-        X_new = np.array([[int(request.form['list1']),
-                           int(request.form['list2']),
-                           int(request.form['list3'])]])
-        pred = str(loaded_model_Tree.predict(X_new))
-        if pred == "[0]":
-            sort = "Калхозница"
-        elif pred == "[1]":
-            sort = "Торпеда"
-        elif pred == "[2]":
-            sort = "Пятиминутка"
-
-        elif pred == "[3]":
-            sort = "Аляска"
-        elif pred == "[4]":
-            sort = "Сангрия"
-
-        return render_template('lab3.html', title="Логистическая регрессия", menu=menu,
-                               class_model="Это: " + sort)
-
+        x_new = np.array([[float(request.form['list1']),
+                           float(request.form['list2']),
+                           float(request.form['list3']),]])
+        pred = loaded_model_Tree.predict(x_new)
+        return render_template('lab3.html',
+                               title="Бинарное дерево",
+                               menu=menu,
+                               class_model=f"Сложность предмета: {pred[0]}")
 if __name__ == "__main__":
     app.run(debug=True)

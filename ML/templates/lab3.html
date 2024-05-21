@@ -4,11 +4,15 @@
 {{ super() }}
 <p>Метод модели Логистической регрессии
 <form action="/p_lab3" method="POST">
-    <p><input type="text" class="form_text" name="list1"> Каллорийность</p>
-    <p><input name="list2" class="form_text" type="text"> Длина </p>
-    <p><input name="list3" class="form_text" type="text"> Уровень сахара</p>
-    <input type="submit" class="form_btn" value="Узнать сорт дыни">
+    <p><input type="text" class="form_text" name="list1"> Код предмета</p>
+    <p><input name="list2" class="form_text" type="text"> Кол-во часов </p>
+    <p><input name="list3" class="form_text" type="text"> Средняя успеваемость</p>
+    <input type="submit" class="form_btn" value="Узнать сложность предмета">
     <h1>{{class_model}}</h1>
+    <p> Регрессия </p>
+    <p> Metric r2: 0.8264551365215069</p>
+    <p> Metric rmsle: 0.029476367858122018</p>
+     <p> Metric mre: 0.024461373941475646</p>
     </p>
 </form>
 
