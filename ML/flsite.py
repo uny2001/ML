@@ -2,6 +2,8 @@ import pickle
 import numpy as np
 from flask import Flask, render_template, url_for, request, jsonify
 from sklearn.preprocessing import LabelEncoder
+from model4.neuron import SingleNeuron
+
 label_encoder=LabelEncoder()
 
 app = Flask(__name__)
@@ -10,12 +12,14 @@ app = Flask(__name__)
 
 menu = [{"name": "Лаба 1", "url": "p_knn"},
         {"name": "Лаба 2", "url": "p_lab2"},
-        {"name": "Лаба 3", "url": "p_lab3"}]
+        {"name": "Лаба 3", "url": "p_lab3"},
+        {"name": "Лаба 4", "url": "p_lab4"}]
 
 loaded_model_knn = pickle.load(open('model/melon', 'rb'))
 loaded_model_Log = pickle.load(open('model2/melon', 'rb'))
-loaded_model_Tree = pickle.load(open('model3/tree', 'rb'))
-
+loaded_model_Tree = pickle.load(open('model3/melon', 'rb'))
+new_neuron = SingleNeuron(input_size=2)
+new_neuron.load_weights('model4/neuron_weights.txt')
 
 @app.route("/")
 def index():
@@ -107,5 +111,17 @@ def f_lab3():
                                title="Бинарное дерево",
                                menu=menu,
                                class_model=f"Сложность предмета: {pred[0]}")
+@app.route("/p_lab4", methods=['POST', 'GET'])
+def p_lab4():
+    if request.method == 'GET':
+        return render_template('lab4.html', title="Первый нейрон", menu=menu, class_model='')
+    if request.method == 'POST':
+        X_new = np.array([[float(request.form['list1'])-165,
+                           float(request.form['list2'])-55,
+                           float(request.form['list3'])]])
+        predictions = new_neuron.forward(X_new)
+        print("Предсказанные значения:", predictions, *np.where(predictions >= 0.5, 'Женщина', 'Мужчина'))
+        return render_template('lab4.html', title="Первый нейрон", menu=menu,
+                               class_model="Это: " + str(*np.where(predictions >= 0.5, 'Женщина', 'Мужчина')))
 if __name__ == "__main__":
     app.run(debug=True)
